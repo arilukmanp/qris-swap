@@ -1,4 +1,6 @@
-import type { TLV } from "./types";
+import { calculateCRC16 } from "./crc16";
+import { getMerchantCategoryName } from "./mcc";
+import type { MerchantAccountInfo, QRISInfo, TLV } from "./types";
 
 /** Known EMVCo/QRIS root tag names. */
 export const TAG_NAMES: Record<string, string> = {
@@ -61,4 +63,91 @@ export function parseTLV(data: string, names: Record<string, string> = TAG_NAMES
     pos += 4 + length;
   }
   return elements;
+}
+
+const NMID_RE = /^ID\d{8,}$/;
+const SITE_STRIP = new Set(["ID", "COM", "CO", "WWW"]);
+
+/** NMID: templates 26–51, prefer tag 51, subtag 02 matching /^ID\d{8,}$/. */
+export function deriveNmid(merchantAccounts: MerchantAccountInfo[]): string | undefined {
+  const ordered = [...merchantAccounts].sort((a, b) =>
+    a.tag === "51" ? -1 : b.tag === "51" ? 1 : parseInt(a.tag, 10) - parseInt(b.tag, 10),
+  );
+  for (const m of ordered) {
+    const c = m.fields.find((f) => f.tag === "02");
+    if (c && NMID_RE.test(c.value)) return c.value;
+  }
+  for (const m of ordered) {
+    const c = m.fields.find((f) => f.tag === "01");
+    if (c && NMID_RE.test(c.value)) return c.value;
+  }
+  return undefined;
+}
+
+/** Issuer: prefer acquirer templates (26–50), fall back to 51; strip ID/COM/CO/WWW labels. */
+export function deriveIssuer(merchantAccounts: MerchantAccountInfo[]): string | undefined {
+  const ordered = [...merchantAccounts].sort((a, b) => (a.tag === "51" ? 1 : 0) - (b.tag === "51" ? 1 : 0));
+  for (const m of ordered) {
+    const site = m.globallyUniqueId;
+    if (!site || !site.includes(".")) continue;
+    const labels = site.split(".").filter((l) => !SITE_STRIP.has(l.toUpperCase()));
+    if (labels.length > 0) return labels.join("-");
+  }
+  return undefined;
+}
+
+/** Parse a QRIS string into a structured, JSON-friendly object. */
+export function parseQRIS(qrisString: string): QRISInfo {
+  const raw = parseTLV(qrisString);
+  const findTag = (tag: string) => raw.find((t) => t.tag === tag);
+
+  const methodValue = findTag("01")?.value;
+  const method = methodValue === "12" ? "dynamic" : "static";
+
+  const tipValue = findTag("55")?.value;
+  const tipIndicator =
+    tipValue === "01" ? "prompt" : tipValue === "02" ? "fixed" : tipValue === "03" ? "percentage" : undefined;
+
+  const merchantAccountInfo: MerchantAccountInfo[] = raw
+    .filter((t) => {
+      const n = parseInt(t.tag, 10);
+      return n >= 26 && n <= 51 && t.children !== undefined;
+    })
+    .map((t) => {
+      const children = t.children ?? [];
+      const findChild = (tag: string) => children.find((c) => c.tag === tag);
+      return {
+        tag: t.tag,
+        globallyUniqueId: findChild("00")?.value ?? "",
+        merchantId: findChild("01")?.value ?? findChild("02")?.value,
+        merchantCriteria: findChild("03")?.value,
+        fields: children,
+      };
+    });
+
+  const crc = findTag("63")?.value ?? "";
+  const crcValid = qrisString.length > 4 && calculateCRC16(qrisString.slice(0, -4)) === crc.toUpperCase();
+
+  return {
+    version: findTag("00")?.value ?? "01",
+    method,
+    merchantName: findTag("59")?.value ?? "",
+    merchantCity: findTag("60")?.value ?? "",
+    merchantCategoryCode: findTag("52")?.value ?? "",
+    merchantCategory: getMerchantCategoryName(findTag("52")?.value ?? ""),
+    issuer: deriveIssuer(merchantAccountInfo),
+    nmid: deriveNmid(merchantAccountInfo),
+    currency: findTag("53")?.value ?? "360",
+    amount: findTag("54")?.value,
+    tipIndicator,
+    tipFixed: findTag("56")?.value,
+    tipPercentage: findTag("57")?.value,
+    countryCode: findTag("58")?.value ?? "ID",
+    postalCode: findTag("61")?.value ?? "",
+    additionalData: findTag("62")?.children,
+    crc,
+    crcValid,
+    merchantAccountInfo,
+    raw,
+  };
 }
