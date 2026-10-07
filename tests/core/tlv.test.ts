@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
 import { parseTLV } from "../../src/core/parser";
-import { SAURUS_STATIC, syntheticBankNeo } from "../fixtures/qris";
+import { SAURUS_SAMPLE, syntheticBankNeo } from "../fixtures/qris";
 
 describe("parseTLV", () => {
   test("parses top-level elements in order", () => {
-    const els = parseTLV(SAURUS_STATIC);
-    expect(els.map((e) => e.tag)).toEqual(["00", "01", "26", "52", "53", "58", "59", "60", "62", "63"]);
+    const els = parseTLV(SAURUS_SAMPLE);
+    expect(els.map((e) => e.tag)).toEqual(["00", "01", "26", "52", "53", "54", "58", "59", "60", "62", "63"]);
     expect(els[0]).toMatchObject({ tag: "00", length: 2, value: "01", name: "Payload Format Indicator" });
   });
 
