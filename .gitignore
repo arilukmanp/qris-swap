@@ -4,4 +4,7 @@ coverage/
 *.tsbuildinfo
 .superpowers/
 *.tgz
+# local-only (kept on disk, deliberately out of git)
+docs/
+scripts/
 # NOTE: dist/ is intentionally committed for git-install support
