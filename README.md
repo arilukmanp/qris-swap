@@ -1,4 +1,4 @@
-# qris-converter
+# Swap QRIS Static to QRIS Dynamic
 
 **English** | [Bahasa Indonesia](README.id.md)
 
@@ -17,13 +17,13 @@ Zero dependencies, fully typed, ESM + CJS.
 ## Install
 
 ```bash
-npm install qris-converter
+npm install qris-swap
 # or
-pnpm add qris-converter
+pnpm add qris-swap
 # or
-yarn add qris-converter
+yarn add qris-swap
 # or
-bun add qris-converter
+bun add qris-swap
 ```
 
 ## Quickstart
@@ -31,7 +31,7 @@ bun add qris-converter
 ### Parse a QRIS string
 
 ```ts
-import { getQRISInfo } from "qris-converter";
+import { getQRISInfo } from "qris-swap";
 
 const qrisString = "00020101021126610014COM.GO-JEK.WWW...";
 const info = getQRISInfo(qrisString);
@@ -41,7 +41,7 @@ console.log(info.merchantName, info.nmid, info.issuer);
 ### Parse from an image
 
 ```ts
-import { getQRISInfo } from "qris-converter";
+import { getQRISInfo } from "qris-swap";
 import { readFileSync } from "node:fs";
 
 const png = readFileSync("qris.png"); // Uint8Array (PNG or JPEG)
@@ -51,7 +51,7 @@ const info = getQRISInfo(png);        // or { data, width, height } raw pixels
 ### Convert static → dynamic
 
 ```ts
-import { convertQRIS } from "qris-converter";
+import { convertQRIS } from "qris-swap";
 
 const result = convertQRIS(qrisString, {
   amount: 50000,
@@ -69,7 +69,7 @@ return new Response(result.image!.png, { headers: { "content-type": "image/png" 
 ### Render an image without converting
 
 ```ts
-import { renderQRIS, toDataURL } from "qris-converter";
+import { renderQRIS, toDataURL } from "qris-swap";
 
 const image = renderQRIS(qrisString, { scale: 8, border: 4 });
 image.png;                                   // Uint8Array (grayscale PNG)

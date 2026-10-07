@@ -1,4 +1,4 @@
-# qris-converter
+# Swap QRIS Statis jadi QRIS Dinamis
 
 [English](README.md) | **Bahasa Indonesia**
 
@@ -17,13 +17,13 @@ Tanpa dependensi, fully typed, ESM + CJS.
 ## Instalasi
 
 ```bash
-npm install qris-converter
+npm install qris-swap
 # atau
-pnpm add qris-converter
+pnpm add qris-swap
 # atau
-yarn add qris-converter
+yarn add qris-swap
 # atau
-bun add qris-converter
+bun add qris-swap
 ```
 
 ## Penggunaan
@@ -31,7 +31,7 @@ bun add qris-converter
 ### Parse string QRIS
 
 ```ts
-import { getQRISInfo } from "qris-converter";
+import { getQRISInfo } from "qris-swap";
 
 const qrisString = "00020101021126610014COM.GO-JEK.WWW...";
 const info = getQRISInfo(qrisString);
@@ -41,7 +41,7 @@ console.log(info.merchantName, info.nmid, info.issuer);
 ### Parse dari gambar
 
 ```ts
-import { getQRISInfo } from "qris-converter";
+import { getQRISInfo } from "qris-swap";
 import { readFileSync } from "node:fs";
 
 const png = readFileSync("qris.png"); // Uint8Array (PNG atau JPEG)
@@ -51,7 +51,7 @@ const info = getQRISInfo(png);        // atau { data, width, height } untuk pixe
 ### Konversi static → dynamic
 
 ```ts
-import { convertQRIS } from "qris-converter";
+import { convertQRIS } from "qris-swap";
 
 const result = convertQRIS(qrisString, {
   amount: 50000,
@@ -69,7 +69,7 @@ return new Response(result.image!.png, { headers: { "content-type": "image/png" 
 ### Render gambar tanpa konversi
 
 ```ts
-import { renderQRIS, toDataURL } from "qris-converter";
+import { renderQRIS, toDataURL } from "qris-swap";
 
 const image = renderQRIS(qrisString, { scale: 8, border: 4 });
 image.png;                                   // Uint8Array (PNG grayscale)

@@ -1,7 +1,7 @@
 {
-  "name": "qris-converter",
-  "version": "0.1.0",
-  "description": "QRIS (EMVCo) static→dynamic converter — parse, validate, convert, and render QR codes. Cloudflare Workers compatible, zero runtime dependencies.",
+  "name": "qris-swap",
+  "version": "1.0.0",
+  "description": "Convert QRIS (EMVCo) static to dynamic easily. Fast parsing, validation, conversion, and rendering of new QR codes. Zero dependencies, fully typed.",
   "type": "module",
   "sideEffects": false,
   "engines": {
@@ -46,9 +46,12 @@
     "cloudflare-workers"
   ],
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/arilukmanp/qris-converter.git"
+    "url": "git+https://github.com/arilukmanp/qris-swap.git"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
