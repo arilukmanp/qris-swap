@@ -1,0 +1,6 @@
+node_modules/
+coverage/
+.DS_Store
+*.tsbuildinfo
+.superpowers/
+# NOTE: dist/ is intentionally committed for git-install support

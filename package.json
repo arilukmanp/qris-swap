@@ -1,0 +1,67 @@
+{
+  "name": "qris-converter",
+  "version": "0.1.0",
+  "description": "QRIS (EMVCo) static\u2192dynamic converter \u2014 parse, validate, convert, and render QR codes. Cloudflare Workers compatible, zero runtime dependencies.",
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_LICENSES.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "licenses": "node scripts/gen-licenses.mjs",
+    "ci": "pnpm typecheck && pnpm test && pnpm build && git diff --exit-code -- dist"
+  },
+  "keywords": [
+    "qris",
+    "emvco",
+    "qrcode",
+    "indonesia",
+    "payment",
+    "cloudflare-workers"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arilukmanp/qris-converter.git"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "fast-png": "^8.0.0",
+    "jpeg-js": "^0.4.4",
+    "jsqr": "^1.4.0",
+    "tsup": "^8.5.1",
+    "typescript": "^7.0.2",
+    "uqr": "^0.1.3",
+    "vitest": "^5.0.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}
