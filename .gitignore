@@ -3,4 +3,5 @@ coverage/
 .DS_Store
 *.tsbuildinfo
 .superpowers/
+*.tgz
 # NOTE: dist/ is intentionally committed for git-install support

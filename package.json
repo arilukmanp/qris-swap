@@ -1,7 +1,7 @@
 {
   "name": "qris-converter",
   "version": "0.1.0",
-  "description": "QRIS (EMVCo) static\u2192dynamic converter \u2014 parse, validate, convert, and render QR codes. Cloudflare Workers compatible, zero runtime dependencies.",
+  "description": "QRIS (EMVCo) static→dynamic converter — parse, validate, convert, and render QR codes. Cloudflare Workers compatible, zero runtime dependencies.",
   "type": "module",
   "sideEffects": false,
   "engines": {
@@ -55,7 +55,7 @@
     "jpeg-js": "^0.4.4",
     "jsqr": "^1.4.0",
     "tsup": "^8.5.1",
-    "typescript": "^7.0.2",
+    "typescript": "^5.9.3",
     "uqr": "^0.1.3",
     "vitest": "^5.0.3"
   }
