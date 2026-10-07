@@ -98,7 +98,8 @@ export function deriveIssuer(merchantAccounts: MerchantAccountInfo[]): string | 
 
 /** Parse a QRIS string into a structured, JSON-friendly object. */
 export function parseQRIS(qrisString: string): QRISInfo {
-  const raw = parseTLV(qrisString);
+  const str = qrisString.trim();
+  const raw = parseTLV(str);
   const findTag = (tag: string) => raw.find((t) => t.tag === tag);
 
   const methodValue = findTag("01")?.value;
@@ -126,7 +127,7 @@ export function parseQRIS(qrisString: string): QRISInfo {
     });
 
   const crc = findTag("63")?.value ?? "";
-  const crcValid = qrisString.length > 4 && calculateCRC16(qrisString.slice(0, -4)) === crc.toUpperCase();
+  const crcValid = str.length > 4 && calculateCRC16(str.slice(0, -4)) === crc.toUpperCase();
 
   return {
     version: findTag("00")?.value ?? "01",

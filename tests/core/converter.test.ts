@@ -74,5 +74,6 @@ describe("convertQRIS", () => {
     bad(() => convertQRIS(REAL_STATIC, { amount: 1000, fee: { type: "fixed", value: 0 } }), "INVALID_FEE");
     bad(() => convertQRIS("hello world", { amount: 1000 }), "NOT_QRIS");
     bad(() => convertQRIS("", { amount: 1000 }), "INVALID_INPUT");
+    bad(() => convertQRIS(REAL_STATIC, { amount: 1000, fee: { type: "Fixed" as unknown as "fixed", value: 100 } }), "INVALID_FEE");
   });
 });

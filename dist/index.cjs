@@ -12381,7 +12381,8 @@ function deriveIssuer(merchantAccounts) {
   return void 0;
 }
 function parseQRIS(qrisString) {
-  const raw = parseTLV(qrisString);
+  const str = qrisString.trim();
+  const raw = parseTLV(str);
   const findTag = (tag) => raw.find((t) => t.tag === tag);
   const methodValue = findTag("01")?.value;
   const method = methodValue === "12" ? "dynamic" : "static";
@@ -12402,7 +12403,7 @@ function parseQRIS(qrisString) {
     };
   });
   const crc2 = findTag("63")?.value ?? "";
-  const crcValid = qrisString.length > 4 && calculateCRC16(qrisString.slice(0, -4)) === crc2.toUpperCase();
+  const crcValid = str.length > 4 && calculateCRC16(str.slice(0, -4)) === crc2.toUpperCase();
   return {
     version: findTag("00")?.value ?? "01",
     method,
@@ -15791,8 +15792,13 @@ function convertQRIS(qrisString, options) {
     throw new QRISError("INVALID_AMOUNT", "amount must be a positive number");
   }
   const fee = options.fee;
-  if (fee && (typeof fee.value !== "number" || !Number.isFinite(fee.value) || fee.value <= 0)) {
-    throw new QRISError("INVALID_FEE", "fee value must be a positive number");
+  if (fee) {
+    if (fee.type !== "fixed" && fee.type !== "percentage") {
+      throw new QRISError("INVALID_FEE", 'fee.type must be "fixed" or "percentage"');
+    }
+    if (typeof fee.value !== "number" || !Number.isFinite(fee.value) || fee.value <= 0) {
+      throw new QRISError("INVALID_FEE", "fee value must be a positive number");
+    }
   }
   const qris = buildDynamicQRIS(qrisString.trim(), amount, fee);
   const parsed = parseQRIS(qris);

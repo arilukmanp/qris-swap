@@ -83,8 +83,13 @@ export function convertQRIS(qrisString: string, options: ConvertOptions): Conver
     throw new QRISError("INVALID_AMOUNT", "amount must be a positive number");
   }
   const fee = options.fee;
-  if (fee && (typeof fee.value !== "number" || !Number.isFinite(fee.value) || fee.value <= 0)) {
-    throw new QRISError("INVALID_FEE", "fee value must be a positive number");
+  if (fee) {
+    if (fee.type !== "fixed" && fee.type !== "percentage") {
+      throw new QRISError("INVALID_FEE", 'fee.type must be "fixed" or "percentage"');
+    }
+    if (typeof fee.value !== "number" || !Number.isFinite(fee.value) || fee.value <= 0) {
+      throw new QRISError("INVALID_FEE", "fee value must be a positive number");
+    }
   }
 
   const qris = buildDynamicQRIS(qrisString.trim(), amount, fee);

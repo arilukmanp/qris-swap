@@ -50,4 +50,23 @@ describe("parseQRIS", () => {
     expect(info.merchantCity).toBe("BEIJING");
     expect(info.crcValid).toBe(true);
   });
+
+  test("trims surrounding whitespace (same result as clean input)", () => {
+    const padded = parseQRIS(`  ${REAL_STATIC}\n`);
+    expect(padded.crcValid).toBe(true);
+    expect(padded.merchantName).toBe("ARDIAN M. A. F., Toko Ala");
+    expect(padded.raw[0]?.tag).toBe("00");
+  });
+
+  test("reports crcValid:false for a corrupted CRC without throwing (regression lock)", () => {
+    const broken = REAL_STATIC.slice(0, -4) + "0000";
+    const info = parseQRIS(broken);
+    expect(info.crcValid).toBe(false);
+    expect(info.merchantName).toBe("ARDIAN M. A. F., Toko Ala");
+  });
+
+  test("accepts a lowercase declared CRC (regression lock)", () => {
+    const lower = REAL_STATIC.slice(0, -4) + REAL_STATIC.slice(-4).toLowerCase();
+    expect(parseQRIS(lower).crcValid).toBe(true);
+  });
 });
