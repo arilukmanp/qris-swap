@@ -6,4 +6,5 @@ coverage/
 *.tgz
 # local-only (kept on disk, deliberately out of git)
 docs/
-# NOTE: dist/ is intentionally committed for git-install support
+# built output (ships via npm publish; run `pnpm build` locally)
+dist/

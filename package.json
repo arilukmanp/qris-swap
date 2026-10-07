@@ -31,10 +31,11 @@
   ],
   "scripts": {
     "build": "tsup",
+    "prepare": "tsup",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "licenses": "node scripts/gen-licenses.mjs",
-    "ci": "pnpm typecheck && pnpm test && pnpm build && git diff --exit-code -- dist"
+    "ci": "pnpm typecheck && pnpm test && pnpm build"
   },
   "keywords": [
     "qris",

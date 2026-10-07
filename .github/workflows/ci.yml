@@ -20,4 +20,3 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
-      - run: git diff --exit-code -- dist
