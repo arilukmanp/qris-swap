@@ -1,5 +1,7 @@
 # qris-converter
 
+**English** | [Bahasa Indonesia](README.id.md)
+
 Parse, validate, and convert Indonesian **QRIS** codes, including static → dynamic, and render QR images. Runs on Node.js ≥ 18, Bun, Deno, browsers, and edge runtimes.
 
 Zero dependencies, fully typed, ESM + CJS.
